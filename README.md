@@ -6,4 +6,4 @@ Authors: Zac Cross
 ## Contents:
 * 1D Wave Equation Attempts
 
-      ```Trying to do 1D Elasticity Equations with a source term -> Current Status [:(]```
+      Trying to do 1D Elasticity Equations with a source term -> Current Status [:(]
