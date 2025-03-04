@@ -203,7 +203,9 @@ function main()
 
 
     # SAT Terms:
-    p_l =  (α0 * H_in * e_0) * (μ*B*S*c_u[1])[1] # - g(l)
+        # Using c_u as u(0)
+    
+    p_l =  (α0 * H_in * e_0) * (μ*B*S*c_u)[1] # - g(l)
     p_r = α1 * μ[N_u+1] * H_in * e_n + β*H_in*transpose(μ*B*S)*e_n *c_u[N_u+1]
 
     function sbp_function!(t, u_vec, v_vec, x_mesh)
