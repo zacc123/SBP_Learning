@@ -20,17 +20,18 @@ function forward_euler!(f, c, h, result, time_mesh, params)
 
     # Start with initial condition
     result[:, 1] = c
+
+    # Move through time with FE steps
     for n = 2:length(time_mesh) - 1
         result[:, n] = result[:, n-1] + h*f(time_mesh[n-1], result[:, n-1], params)
     end
     
-    return result
+    return nothing
 end
 
 # Stencil maker for M
 function M_stencil!(Mu, M) 
     m,n = size(Mu)
-    # Wtf is this line doing??
         # Still open # Questions! What about edges??
         # TO DO, ask Brit about that
         # For now just set to 1 for N+1 and 1 rows
@@ -96,6 +97,8 @@ function p_r(t, dx, H_inv, e_n, Mu, B, S, u_vec, x_mesh)
 end
 
 function sbp_sat(t, dx, H_inv, e_0, e_n, Mu, B, S, D, u_vec, x_mesh)
+    # Full SBP SAT term expression for E&D paper, 
+        # TODO source term is still a bit wonk, but not affecting final answer much rn.... sus
     n = length(u_vec)
     res = zeros(n)
     sbp = D*u_vec
@@ -106,7 +109,7 @@ function sbp_sat(t, dx, H_inv, e_0, e_n, Mu, B, S, D, u_vec, x_mesh)
 end
 
 function f(t, y_vec, params)
-    # Finally definining the total right hand side. Assume that y_vec is u and v stacked
+    # Finally definining the total right hand side. Assume that y_vec is u and v stacked -> vcat(u, v)
     
     dx, H_inv, e_0, e_n, Mu, B, S, D, N_x, x_mesh = params # unpack all the params
     
