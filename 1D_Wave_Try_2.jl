@@ -130,6 +130,7 @@ function main()
     # Set up some initial conditions for our mesh
     L = 0.1
     x_step = 0.01
+    dx = x_step # adding in for debug : )
 
     x_mesh = 0:x_step:L
     N_u = length(x_mesh) - 1
@@ -137,10 +138,10 @@ function main()
     # Setup matrices
 
     # H Matrix
-    H = Matrix{Float64}(I, N_u+1, N_u+1)
+    H = Matrix{Float64}(I, N_u+1, N_u+1) 
     H[1, 1] = .5
     H[N_u+1, N_u+1] = .5
-    
+    H = dx .* H # extra dx here
 
     # Inverse H Matrix
     H_in = H\Matrix{Float64}(I, N_u+1, N_u+1)
@@ -158,6 +159,7 @@ function main()
     S[N_u+1,N_u-1] = 0.5
     S[N_u+1,N_u] = -2.0
     S[N_u+1,N_u+1] = 1.5
+    S = S ./ dx # extra dx here
 
 
     
@@ -168,6 +170,7 @@ function main()
     # M stencil
     M = zeros(N_u+1, N_u+1)
     M_stencil!(μ, M)
+    M 
 
     # start and end filters
     e_n = zeros(N_u+1, 1)
