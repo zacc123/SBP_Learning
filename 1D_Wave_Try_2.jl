@@ -170,7 +170,7 @@ function main()
     # M stencil
     M = zeros(N_u+1, N_u+1)
     M_stencil!(μ, M)
-    M 
+    M = dx^2 .* M
 
     # start and end filters
     e_n = zeros(N_u+1, 1)
@@ -184,7 +184,7 @@ function main()
 
     # Constants for SAT terms
     α0 = -1
-    α1 = -13/h
+    α1 = -13/dx
     β = 1
 
 
