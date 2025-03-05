@@ -54,6 +54,11 @@ function g(t, x, L)
     return  c^2 * sin(c*x - t)
 end
 
+function source_term(t, x_mesh, L)
+    c = pi / L 
+    return [c^2* sin(c*x - t) for x in x_mesh]
+end
+
 function u_0!(t, u_vec, x_mesh, L)
     # Function to set intial u
     c = pi / L 
@@ -96,7 +101,7 @@ function sbp_sat(t, dx, H_inv, e_0, e_n, Mu, B, S, D, u_vec, x_mesh)
     sbp = D*u_vec
     sat_r = p_r(t, dx, H_inv, e_n, Mu, B, S, u_vec, x_mesh)
     sat_l = p_l(t, H_inv, e_0, Mu, B, S, u_vec, x_mesh)
-    res[:] = sbp + sat_r + sat_l
+    res[:] = sbp + sat_r + sat_l + source_term(t, x_mesh, x_mesh[n])
     return res
 end
 
@@ -123,7 +128,7 @@ function main()
     
     # Define our 1D Mesh
     dx = 0.1 # Step size between grid points
-    L = 1 # Length of grid starting at 0
+    L = 2 # Length of grid starting at 0
     x_mesh = 0:dx:L
     N_x = length(x_mesh) - 1 # Again follow convention N = num grid points - 1
 
@@ -198,15 +203,32 @@ function main()
 
     plot(time_mesh, result[1, :], label="U")
     plot!(time_mesh, result[1+N_x+1, :], label="V")
+    xlabel!("Time")
+    ylabel!("Displacement and Velocity Overlay")
+    title!("Overlay of U and V vs Time at X = 0")
     png("T4, X0")
-
-    plot(time_mesh, result[5, :], label="U")
-    plot!(time_mesh, result[5+N_x+1, :], label="V")
-    png("T4, X5")
 
     plot(time_mesh, result[11, :], label="U")
     plot!(time_mesh, result[11+N_x+1, :], label="V")
-    png("T4, X11")
+    xlabel!("Time")
+    ylabel!("Displacement and Velocity Overlay")
+    title!("Overlay of U and V vs Time at X = 10")
+    png("T4, X10")
+
+    plot(time_mesh, result[21, :], label="U")
+    plot!(time_mesh, result[21+N_x+1, :], label="V")
+    xlabel!("Time")
+    ylabel!("Displacement and Velocity Overlay")
+    title!("Overlay of U and V vs Time at X = 20")
+    png("T4, X20")
+
+    plot(x_mesh, result[1:N_x+1, 1], label="U at t=$(time_mesh[1])")
+    for i in eachindex(time_mesh)
+        if i % 100000 == 0
+            plot!(x_mesh, result[1:N_x+1, i+1], label="U at t=$(time_mesh[i+1])")
+        end
+    end
+    png("U Overlay")
     return nothing
 end
 
